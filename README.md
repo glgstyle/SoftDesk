@@ -1,7 +1,7 @@
 
 
 
-# <h1 align="center">SoftDesk</h1>
+# <h1 align="center">SoftDesk-API</h1>
 </br>
 <p align="center">
     <img src="https://user.oc-static.com/upload/2020/09/22/16007803099977_P8%20%281%29.png" 
@@ -11,7 +11,7 @@
 </p>
 
 
-SoftDesk est une application permettant de remonter et suivre des problèmes techniques (issue tracking system). Cette solution s’adresse à des entreprises clientes, en B2B. .
+SoftDesk-API est une application permettant de remonter et suivre des problèmes techniques (issue tracking system). Cette solution s’adresse à des entreprises clientes, en B2B. .
 
 # Utilisation
 # Installation de SoftDesk :
@@ -28,6 +28,7 @@ SoftDesk est une application permettant de remonter et suivre des problèmes tec
     ```python -m venv env```
 
 4. Activer l'environnement :  
+
     ```source env/bin/activate ```
 
     ou 
