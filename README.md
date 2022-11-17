@@ -13,7 +13,6 @@
 
 SoftDesk-API est une application permettant de remonter et suivre des problèmes techniques (issue tracking system). Cette solution s’adresse à des entreprises clientes, en B2B. .
 
-# Utilisation
 # Installation de SoftDesk :
 
 1. Placez-vous dans le répertoire qui contiendra le projet 
@@ -34,3 +33,5 @@ SoftDesk-API est une application permettant de remonter et suivre des problèmes
     ou 
 
     ```env\Scripts\activate ```
+
+# Utilisation
