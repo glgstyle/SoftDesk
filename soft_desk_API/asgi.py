@@ -1,5 +1,5 @@
 """
-ASGI config for IssueTrackingSystem project.
+ASGI config for soft_desk_API project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'IssueTrackingSystem.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'soft_desk_API.settings')
 
 application = get_asgi_application()
