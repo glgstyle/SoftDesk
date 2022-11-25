@@ -14,6 +14,7 @@ class Project(models.Model):
     type = models.fields.CharField(max_length=128, choices=TYPE_CHOICES)
     author_user_id = models.ForeignKey(
         to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    active = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title
@@ -31,6 +32,7 @@ class Contributor(models.Model):
     permission = models.CharField(
         max_length=200, choices=PERMISSION_CHOICES)
     role = models.CharField(max_length=128, blank=True)
+    active = models.BooleanField(default=False)
 
     def __str__(self):
         return "Le contributeur du projet : " + self.project.title \
@@ -64,6 +66,7 @@ class Issue(models.Model):
         to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     assignee_user = models.ForeignKey(to=Contributor, on_delete=models.CASCADE)
     created_time = models.DateTimeField(auto_now_add=True)
+    active = models.BooleanField(default=False)
 
 
 class Comment(models.Model):
@@ -72,3 +75,4 @@ class Comment(models.Model):
         to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     issue_id = models.ForeignKey(to=Issue, on_delete=models.CASCADE)
     created_time = models.DateTimeField(auto_now_add=True)
+    active = models.BooleanField(default=False)
