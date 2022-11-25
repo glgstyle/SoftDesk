@@ -1,4 +1,4 @@
-from django.db import models
+from django.db import models, transaction
 from django.conf import settings
 
 
@@ -6,6 +6,7 @@ class Project(models.Model):
     title = models.fields.CharField(max_length=128)
     description = models.fields.CharField(max_length=255, blank=True)
     TYPE_CHOICES = (
+        # first is displayed and second in database
         ('Back-end', 'Back-end'),
         ('Front-end', 'Front-end'),
         ('IOs', 'IOs'),
@@ -68,6 +69,14 @@ class Issue(models.Model):
     created_time = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=False)
 
+    @transaction.atomic
+    def disable(self):
+        if self.active is False:
+        # Ne faisons rien si la catégorie est déjà désactivée
+            return
+        self.active = False
+        self.save()
+        self.project.update(active=False)
 
 class Comment(models.Model):
     description = models.fields.CharField(max_length=128, blank=True)

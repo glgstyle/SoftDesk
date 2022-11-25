@@ -7,8 +7,14 @@ class ProjectSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Project
-        fields = ['id', 'title', 'description', 'type', 'author_user_id']
+        fields = ['id', 'title', 'description', 'type', 'active', 'author_user_id']
 
+    def validate_title(self, value):
+        # Nous vérifions que le projet existe
+        if Project.objects.filter(title=value).exists():
+        # En cas d'erreur, DRF nous met à disposition l'exception ValidationError
+            raise serializers.ValidationError('Project already exists')
+        return value
 
 class ContributorSerializer(serializers.ModelSerializer):
 
@@ -29,7 +35,7 @@ class IssueDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Issue
-        fields = ['id', 'title', 'desc', 'created_time', 'tag', 'priority', 'project_id', 'status', 'author_user', 'assignee_user']
+        fields = ['id', 'title', 'desc', 'created_time', 'tag', 'priority', 'project', 'status', 'author_user', 'assignee_user']
 
 class CommentSerializer(serializers.ModelSerializer):
 

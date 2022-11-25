@@ -1,9 +1,7 @@
-# from django.shortcuts import render
-# from authentication.models import User
 from issue_tracking_system.models import Project, Contributor, Issue, Comment
 from issue_tracking_system.serializers import ProjectSerializer, ContributorSerializer, IssueListSerializer, IssueDetailSerializer, CommentSerializer
 from rest_framework.response import Response
-from rest_framework.viewsets import ReadOnlyModelViewSet
+from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
 from rest_framework.decorators import action
 
 
@@ -22,12 +20,12 @@ class MultipleSerializerMixin:
         return super().get_serializer_class()
 
 
-class ProjectViewset(ReadOnlyModelViewSet):
+class ProjectViewset(ModelViewSet):
 
     serializer_class = ProjectSerializer
-
+    # !!!! TODo Make condition for only admin get access to CRUD !!!!
     def get_queryset(self):
-        queryset = Project.objects.filter(active=True)
+        queryset = Project.objects.all()
         project_id = self.request.GET.get('project_id')
         if project_id is not None:
             queryset = queryset.filter(project_id=project_id)
@@ -75,6 +73,8 @@ class CommentViewset(ReadOnlyModelViewSet):
         if comment_id is not None:
             queryset = queryset.filter(comment_id=comment_id)
         return queryset
+
+
 
 # Create
 # POST : Création d’une ressource.
