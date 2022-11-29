@@ -1,4 +1,3 @@
-
 from django.contrib import admin
 from django.urls import include, path
 from issue_tracking_system.views import ProjectViewset, ContributorViewset, IssueViewset, CommentViewset
@@ -16,8 +15,7 @@ router.register('comment', CommentViewset, basename='comment')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('api-auth/', include('rest_framework.urls')),
-    path('account/register/', UserRegistrationView.as_view()),
+    # path('account/register/', UserRegistrationView.as_view()),
     path("", include("authentication.urls")),
-    path('api/', include(router.urls))
+    path('api/', include(router.urls)),
 ]

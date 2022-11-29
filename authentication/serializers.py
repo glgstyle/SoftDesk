@@ -1,30 +1,30 @@
-from django.db import IntegrityError
 from rest_framework import serializers
-# from django.contrib import messages
 from authentication.models import User
+from django.contrib.auth import get_user_model
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer as JwtTokenObtainPairSerializer
 
 
-class UserSerializer(serializers.ModelSerializer):
+# class UserSerializer(serializers.ModelSerializer):
 
-    class Meta:
-        model = User
-        fields = ['id', 'first_name', 'last_name', 'username', 'password']
+#     class Meta:
+#         model = User
+#         fields = ['id', 'first_name', 'last_name', 'username', 'password']
 
-    # def validate_username(self, value):
-    #     if User.objects.filter(username=value).exists():
-    #         raise serializers.ValidationError('Email already exists')
-    #     return value
+#     # def validate_username(self, value):
+#     #     if User.objects.filter(username=value).exists():
+#     #         raise serializers.ValidationError('Email already exists')
+#     #     return value
 
-    def create(self, validated_data):
-        """ Create and return a new `User` instance,
-            given the validated data. """
-        password = validated_data.pop('password')
-        user = User(**validated_data)
-        user.email = user.username
-        if password is not None:
-            user.set_password(password)
-        user.save()
-        return user
+#     def create(self, validated_data):
+#         """ Create and return a new `User` instance,
+#             given the validated data. """
+#         password = validated_data.pop('password')
+#         user = User(**validated_data)
+#         user.email = user.username
+#         if password is not None:
+#             user.set_password(password)
+#         user.save()
+#         return user
     
     # def update(self, user, validated_data):
     #     """
@@ -37,3 +37,14 @@ class UserSerializer(serializers.ModelSerializer):
     #     user.last_name = validated_data.get('last_name', user.last_name)
     #     user.save()
     #     return user
+class TokenObtainPairSerializer(JwtTokenObtainPairSerializer):
+    username_field = get_user_model().USERNAME_FIELD
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        # model = User
+        # fields = ['email', 'password']
+
+        model = get_user_model()
+        fields = ['email', 'password']
