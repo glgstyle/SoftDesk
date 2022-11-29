@@ -3,6 +3,8 @@ from issue_tracking_system.serializers import ProjectSerializer, ContributorSeri
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
 from rest_framework.decorators import action
+# from rest_framework.permissions import IsAuthenticated
+from rest_framework.authtoken.models import Token
 
 
 class MultipleSerializerMixin:
@@ -22,6 +24,7 @@ class MultipleSerializerMixin:
 
 class ProjectViewset(ModelViewSet):
 
+    # permission_classes = [IsAuthenticated]  # Only for logged users
     serializer_class = ProjectSerializer
     # !!!! TODo Make condition for only admin get access to CRUD !!!!
     def get_queryset(self):
@@ -34,6 +37,7 @@ class ProjectViewset(ModelViewSet):
 
 class ContributorViewset(ReadOnlyModelViewSet):
 
+    # permission_classes = [IsAuthenticated]  # Only for logged users
     serializer_class = ContributorSerializer
 
     def get_queryset(self):
@@ -46,6 +50,7 @@ class ContributorViewset(ReadOnlyModelViewSet):
 
 class IssueViewset(MultipleSerializerMixin, ReadOnlyModelViewSet):
 
+    # permission_classes = [IsAuthenticated]  # Only for logged users
     serializer_class = IssueListSerializer
     detail_serializer_class = IssueDetailSerializer
 
@@ -65,6 +70,7 @@ class IssueViewset(MultipleSerializerMixin, ReadOnlyModelViewSet):
 
 class CommentViewset(ReadOnlyModelViewSet):
 
+    # permission_classes = [IsAuthenticated]  # Only for logged users
     serializer_class = CommentSerializer
 
     def get_queryset(self):
