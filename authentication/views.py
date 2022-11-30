@@ -34,7 +34,9 @@ class UserRegistrationView(generics.CreateAPIView):
     
     serializer_class = UserSerializer
     def post(self, request):
-        user = request.data
+        user = User()
+        user.email = request.data['email']
+        user.password = request.data['password']
         serializer = self.serializer_class(data=user)
         serializer.is_valid(raise_exception=True)
         serializer.save()
