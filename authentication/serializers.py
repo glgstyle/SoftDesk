@@ -1,50 +1,26 @@
 from rest_framework import serializers
 from authentication.models import User
-from django.contrib.auth import get_user_model
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer as JwtTokenObtainPairSerializer
 
 
-# class UserSerializer(serializers.ModelSerializer):
+class RegistrationSerializer(serializers.ModelSerializer):
 
-#     class Meta:
-#         model = User
-#         fields = ['id', 'first_name', 'last_name', 'username', 'password']
+    password2 = serializers.CharField(
+        style={"input_type": "password"}, write_only=True)
 
-#     # def validate_username(self, value):
-#     #     if User.objects.filter(username=value).exists():
-#     #         raise serializers.ValidationError('Email already exists')
-#     #     return value
-
-#     def create(self, validated_data):
-#         """ Create and return a new `User` instance,
-#             given the validated data. """
-#         password = validated_data.pop('password')
-#         user = User(**validated_data)
-#         user.email = user.username
-#         if password is not None:
-#             user.set_password(password)
-#         user.save()
-#         return user
-    
-    # def update(self, user, validated_data):
-    #     """
-    #     Update and return an existing `User` instance, given the validated data.
-    #     """
-    #     user.email = validated_data.get('email', user.email)
-    #     user.username = validated_data.get('email', user.email)
-    #     user.password = validated_data.get('password', user.password)
-    #     user.first_name = validated_data.get('first_name', user.first_name)
-    #     user.last_name = validated_data.get('last_name', user.last_name)
-    #     user.save()
-    #     return user
-class TokenObtainPairSerializer(JwtTokenObtainPairSerializer):
-    username_field = get_user_model().USERNAME_FIELD
-
-
-class UserSerializer(serializers.ModelSerializer):
     class Meta:
-        # model = User
-        # fields = ['email', 'password']
-
-        model = get_user_model()
-        fields = ['email', 'password']
+        model = User
+        fields = ['email', 'password', 'password2']
+        # extra_kwargs = {
+        #     'password': {'write_only': True}
+        # }
+    def create(self, validated_data):
+        password = validated_data.pop('password')
+        password2 = validated_data.pop('password2')
+        user = self.Meta.model(**validated_data)
+        if password != password2:
+            raise serializers.ValidationError(
+                {'password': 'Les mots de passes doivent etre identiques.'})
+        elif password is not None:
+            user.set_password(password)
+        user.save()
+        return user

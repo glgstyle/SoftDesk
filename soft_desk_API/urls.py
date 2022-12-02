@@ -15,7 +15,6 @@ router.register('comment', CommentViewset, basename='comment')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('account/register/', UserRegistrationView.as_view()),
     path("", include("authentication.urls")),
     path('api/', include(router.urls)),
 ]
