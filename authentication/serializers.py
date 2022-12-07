@@ -4,20 +4,20 @@ from authentication.models import User
 
 class RegistrationSerializer(serializers.ModelSerializer):
 
-    password2 = serializers.CharField(
+    confirmation = serializers.CharField(
         style={"input_type": "password"}, write_only=True)
 
     class Meta:
         model = User
-        fields = ['email', 'password', 'password2']
+        fields = ['email', 'password', 'confirmation']
         # extra_kwargs = {
         #     'password': {'write_only': True}
         # }
     def create(self, validated_data):
         password = validated_data.pop('password')
-        password2 = validated_data.pop('password2')
+        confirmation = validated_data.pop('confirmation')
         user = self.Meta.model(**validated_data)
-        if password != password2:
+        if password != confirmation:
             raise serializers.ValidationError(
                 {'password': 'Les mots de passes doivent etre identiques.'})
         elif password is not None:
