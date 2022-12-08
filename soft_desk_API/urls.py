@@ -7,8 +7,9 @@ from rest_framework import routers
 
 router = routers.SimpleRouter()
 router.register('user', UserViewset, basename='user')
-router.register('project', ProjectViewset, basename='project')
+router.register('projects', ProjectViewset, basename='project')
 router.register('contributor', ContributorViewset, basename='contributor')
+# router.register('projects/{id}/users', ContributorViewset, basename='contributor')
 router.register('issue', IssueViewset, basename='issue')
 router.register('comment', CommentViewset, basename='comment')
 

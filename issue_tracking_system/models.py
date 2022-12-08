@@ -13,7 +13,7 @@ class Project(models.Model):
         ('Android', 'Android'),
     )
     type = models.fields.CharField(max_length=128, choices=TYPE_CHOICES)
-    author_user_id = models.ForeignKey(
+    author_user = models.ForeignKey(
         to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     active = models.BooleanField(default=False)
 
@@ -21,9 +21,9 @@ class Project(models.Model):
         return self.title
 
     @property
-    def author_user(self):
-        if self.author_user_id != None:
-            return self.author_user_id.id
+    def author(self):
+        if self.author_user != None:
+            return self.author_user.id
         else:
             return None
 
@@ -40,10 +40,6 @@ class Contributor(models.Model):
         max_length=200, choices=PERMISSIONS_CHOICES)
     role = models.CharField(max_length=200, blank=True)
     active = models.BooleanField(default=False)
-
-    # def __str__(self):
-    #     return "Le contributeur du projet : " + self.project.title \
-    #         + " est : " + self.user.username
 
 
 class Issue(models.Model):
@@ -62,23 +58,23 @@ class Issue(models.Model):
     )
     priority = models.fields.CharField(
         max_length=128, choices=PRIORITY_CHOICES)
-    project_id = models.ForeignKey(to=Project, on_delete=models.CASCADE)
+    project = models.ForeignKey(to=Project, on_delete=models.CASCADE)
     STATUS_CHOICES = (
         ('À faire', 'to_do'),
         ('En cours', 'on_progress'),
         ('Terminé', 'done')
     )
     status = models.fields.CharField(max_length=128, choices=STATUS_CHOICES)
-    author_user_id = models.ForeignKey(
+    author_user = models.ForeignKey(
         to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     assignee_user = models.ForeignKey(to=Contributor, on_delete=models.CASCADE)
     created_time = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=False)
 
     @property
-    def author_user(self):
-        if self.author_user_id != None:
-            return self.author_user_id.id
+    def author(self):
+        if self.author_user != None:
+            return self.author_user.id
         else:
             return None
 
@@ -94,8 +90,15 @@ class Issue(models.Model):
 
 class Comment(models.Model):
     description = models.fields.CharField(max_length=128, blank=True)
-    author_user_id = models.ForeignKey(
+    author_user = models.ForeignKey(
         to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    issue_id = models.ForeignKey(to=Issue, on_delete=models.CASCADE)
+    issue = models.ForeignKey(to=Issue, on_delete=models.CASCADE)
     created_time = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=False)
+
+    @property
+    def author(self):
+        if self.author_user != None:
+            return self.author_user.id
+        else:
+            return None

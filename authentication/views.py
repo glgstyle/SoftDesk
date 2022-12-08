@@ -14,9 +14,9 @@ class UserViewset(ReadOnlyModelViewSet):
 
     def get_queryset(self):
         queryset = User.objects.filter()
-        user_id = self.request.GET.get('user_id')
-        if user_id is not None:
-            queryset = queryset.filter(user_id=user_id)
+        user = self.request.GET.get('user')
+        if user is not None:
+            queryset = queryset.filter(id=user)
         return queryset
 
 
