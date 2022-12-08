@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authtoken.models import Token
 from rest_framework import permissions, status, generics
 
+
 class MultipleSerializerMixin:
     # Un mixin est une classe qui ne fonctionne pas de façon autonome
     # Elle permet d'ajouter des fonctionnalités aux classes qui les étendent
@@ -170,6 +171,5 @@ class CommentViewset(ModelViewSet):
 
 
 # permissions sur les accès modification etc
-# faire api/users pour avoir tous les utilisateurs
 # modifier les _id du modèle
 # owasp

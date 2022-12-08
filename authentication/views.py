@@ -5,19 +5,8 @@ from rest_framework import generics, status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.response import Response
-from authentication.serializers import RegistrationSerializer
-
-
-class UserViewset(ReadOnlyModelViewSet):
-
-    serializer_class = RegistrationSerializer
-
-    def get_queryset(self):
-        queryset = User.objects.filter()
-        user = self.request.GET.get('user')
-        if user is not None:
-            queryset = queryset.filter(id=user)
-        return queryset
+from rest_framework.decorators import action
+from authentication.serializers import RegistrationSerializer, UsersSerializer
 
 
 class UserRegistrationView(generics.CreateAPIView):
@@ -31,3 +20,17 @@ class UserRegistrationView(generics.CreateAPIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UsersViewset(ReadOnlyModelViewSet):
+
+    serializer_class = UsersSerializer
+
+    def get_queryset(self):
+        queryset = User.objects.all()
+        return queryset
+
+    @action(detail=True, methods=['post'])
+    def disable(self, request, pk):
+        self.get_object().disable()
+        return Response()
