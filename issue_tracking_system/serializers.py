@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from rest_framework.serializers  import HyperlinkedIdentityField
 from issue_tracking_system.models import Project, Contributor, Issue, Comment
 
 
@@ -15,11 +16,13 @@ class ProjectSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError('Project already exists')
         return value
 
+
 class ContributorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Contributor
         fields = ['id', 'user', 'project', 'permission', 'role']
+
 
 # class ContributorListSerializer(serializers.ListSerializer):
 
@@ -57,7 +60,6 @@ class IssueListSerializer(serializers.ModelSerializer):
         model = Issue
         fields = ['id', 'title', 'desc', 'created_time', 'tag', 'priority', 'project', 'status', 'active', 'assignee_user', 'author']
 
-        
 
 class CommentSerializer(serializers.ModelSerializer):
 

@@ -78,6 +78,12 @@ class Issue(models.Model):
         else:
             return None
 
+    # @property
+    # def contributor(self):
+    #     if self.assignee_user != None:
+    #         return self.assignee_user.id
+    #     else:
+    #         return None
 
     @transaction.atomic
     def disable(self):
