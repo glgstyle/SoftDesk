@@ -1,9 +1,10 @@
 from rest_framework import serializers
-from rest_framework.serializers  import HyperlinkedIdentityField
+from rest_framework.serializers  import HyperlinkedIdentityField, HyperlinkedModelSerializer
+from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
 from issue_tracking_system.models import Project, Contributor, Issue, Comment
 
 
-class ProjectSerializer(serializers.ModelSerializer):
+class ProjectSerializer(HyperlinkedModelSerializer):
 
     class Meta:
         model = Project
@@ -17,11 +18,40 @@ class ProjectSerializer(serializers.ModelSerializer):
         return value
 
 
-class ContributorSerializer(serializers.ModelSerializer):
+class ContributorSerializer(NestedHyperlinkedModelSerializer):
 
     class Meta:
         model = Contributor
         fields = ['id', 'user', 'project', 'permission', 'role']
+
+
+class IssueListSerializer(NestedHyperlinkedModelSerializer):
+    parent_lookup_kwargs = {
+        'project_pk': 'project_id',
+    }
+    extra_kwargs = {
+        'url': {'view_name': 'project', 'lookup_field':  
+                'project-detail'},
+    }
+    # comment = CommentSerializer()
+    class Meta:
+        model = Issue
+        fields = ['id', 'title', 'desc', 'created_time', 'tag', 'priority', 'project', 'status', 'active', 'assignee_user', 'author']
+    
+    
+# class CommentSerializer(serializers.ModelSerializer):
+class CommentSerializer(NestedHyperlinkedModelSerializer):
+    parent_lookup_kwargs = {
+        'issue_pk': 'issue_id',
+        'project_pk': 'issue_project_id',
+    }
+    extra_kwargs = {
+            'url': {'view_name': 'issues', 'lookup_field':  
+                    'issue-detail'},
+        }
+    class Meta:
+        model = Comment
+        fields = ['id', 'description', 'author', 'active', 'issue', 'created_time']
 
 
 # class ContributorListSerializer(serializers.ListSerializer):
@@ -54,15 +84,3 @@ class ContributorSerializer(serializers.ModelSerializer):
 #         model = Issue
 #         fields = ['id', 'title', 'desc', 'created_time', 'tag', 'priority', 'project_id', 'status', 'author_user', 'assignee_user']
 
-class IssueListSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Issue
-        fields = ['id', 'title', 'desc', 'created_time', 'tag', 'priority', 'project', 'status', 'active', 'assignee_user', 'author']
-
-
-class CommentSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Comment
-        fields = ['id', 'description', 'author', 'active', 'issue', 'created_time']

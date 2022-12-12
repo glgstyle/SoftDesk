@@ -1,7 +1,7 @@
 from issue_tracking_system.models import Project, Contributor, Issue, Comment
 from issue_tracking_system.serializers import ProjectSerializer, ContributorSerializer, IssueListSerializer, CommentSerializer
 from rest_framework.response import Response
-from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
+from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet, ViewSet
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authtoken.models import Token
@@ -164,6 +164,7 @@ def http_methods_disable(*methods):
         return cls
     return decorator
 
+
 @http_methods_disable('put', 'patch', 'delete')   
 class CommentViewset(ModelViewSet):
     """View for Comment object. """
@@ -175,7 +176,7 @@ class CommentViewset(ModelViewSet):
         """Define the Query String usable in url."""
         # queryset = Comment.objects.filter(active=True)
         queryset = Comment.objects.filter(issue=self.kwargs['issue_pk'])
-        comment = self.request.GET.get('comment')
+        comment = self.request.GET.get('issue')
         if comment is not None:
             queryset = queryset.filter(id=comment)
         return queryset
