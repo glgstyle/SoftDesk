@@ -35,3 +35,19 @@ SoftDesk-API est une application permettant de remonter et suivre des problèmes
     ```env\Scripts\activate ```
 
 # Utilisation
+
+    Pour plus d'informations concernant les requêtes de l'API veuillez consulter la documentation ci dessous :
+    https://documenter.getpostman.com/view/23089101/2s8YzXterj
+
+# Technologies
+    - Python
+    - Django Rest 
+    - Postman
+
+# Contribuer au project
+
+    Soft Desk est un projet open source. N'hésitez pas à contribuer avec vos propres fonctionnalités.
+
+# Auteur
+
+    Gwénaëlle
