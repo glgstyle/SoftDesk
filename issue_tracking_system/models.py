@@ -41,6 +41,12 @@ class Contributor(models.Model):
     role = models.CharField(max_length=200, blank=True)
     active = models.BooleanField(default=False)
 
+    @property
+    def author(self):
+        if self.user != None:
+            return self.user.id
+        else:
+            return None
 
 class Issue(models.Model):
     title = models.fields.CharField(max_length=128)
@@ -77,13 +83,6 @@ class Issue(models.Model):
             return self.author_user.id
         else:
             return None
-
-    # @property
-    # def contributor(self):
-    #     if self.assignee_user != None:
-    #         return self.assignee_user.id
-    #     else:
-    #         return None
 
     @transaction.atomic
     def disable(self):
