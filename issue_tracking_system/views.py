@@ -1,5 +1,6 @@
 from issue_tracking_system.models import Project, Contributor, Issue, Comment
-from issue_tracking_system.serializers import ProjectSerializer, ContributorSerializer, IssueListSerializer, CommentSerializer
+from issue_tracking_system.serializers import ProjectSerializer, ContributorSerializer, IssueSerializer, CommentSerializer
+from authentication.serializers import UsersSerializer
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet, ViewSet
 from rest_framework.decorators import action
@@ -7,25 +8,10 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.authtoken.models import Token
 from rest_framework import permissions, status, generics
 from django.shortcuts import get_object_or_404
-
-
-class MultipleSerializerMixin:
-    # Un mixin est une classe qui ne fonctionne pas de façon autonome
-    # Elle permet d'ajouter des fonctionnalités aux classes qui les étendent
-
-    detail_serializer_class = None
-
-    def get_serializer_class(self):
-        # Notre mixin détermine quel serializer à utiliser
-        # même si elle ne sait pas ce que c'est ni comment l'utiliser
-        if self.action == 'retrieve' and self.detail_serializer_class is not None:
-            # Si l'action demandée est le détail alors nous retournons le serializer de détail
-            return self.detail_serializer_class
-        return super().get_serializer_class()
+from authentication.models import User
 
 
 # permissions
-
 class IsOwnerOrReadOnly(permissions.BasePermission):
     """
     Object-level permission to only allow owners of an object to edit it.
@@ -87,68 +73,27 @@ class ProjectViewset(ModelViewSet):
 class ContributorViewset(ModelViewSet):
     """View for Contributor object. """
 
-    # permission_classes = [IsAuthenticated]  # Only for logged users
     permission_classes = [IsAuthenticated & IsContributor] 
-    serializer_class = ContributorSerializer
+    serializer_class = UsersSerializer
 
     def get_queryset(self):
         """Define the Query String usable in url."""
-        # queryset = Contributor.objects.all()
-        queryset = Contributor.objects.filter(project=self.kwargs['project_pk'])
-        contributor = self.request.GET.get('contributor')
-        if contributor is not None :
-            queryset = queryset.filter(id=contributor)
+        contributor_queryset = Contributor.objects.filter(
+            project=self.kwargs['project_pk'])         
+        users_ids = contributor_queryset.values_list('user', flat=True)
+        queryset = User.objects.filter(pk__in=users_ids).all()
         return queryset
 
-
-# class ContributorViewset(MultipleSerializerMixin, ModelViewSet):
-
-#     permission_classes = [IsAuthenticated]  # Only for logged users
-#     serializer_class = ContributorListSerializer
-#     detail_serializer_class =  ContributorDetailSerializer
-#     def get_queryset(self):
-#         return Issue.objects.filter(active=True)
-
-#     def get_serializer_class(self):
-#         if self.action == 'retrieve':
-#             return self.detail_serializer_class
-#         return super().get_serializer_class()
-
-#     @action(detail=True, methods=['post'])
-#     def disable(self, request, pk):
-#         self.get_object().disable()
-#         return Response()
-
-
-# class IssueViewset(MultipleSerializerMixin, ModelViewSet):
-
-    # permission_classes = [IsAuthenticated]  # Only for logged users
-    # serializer_class = IssueListSerializer
-    # detail_serializer_class = IssueDetailSerializer
-
-    # def get_queryset(self):
-    #     return Issue.objects.filter(active=True)
-
-    # def get_serializer_class(self):
-    #     if self.action == 'retrieve':
-    #         return self.detail_serializer_class
-    #     return super().get_serializer_class()
-
-    # @action(detail=True, methods=['post'])
-    # def disable(self, request, pk):
-    #     self.get_object().disable()
-    #     return Response()
     
 class IssueViewset(ModelViewSet):
     """View for Issue object. """
 
     permission_classes = [IsAuthenticated & IsOwnerOrReadOnly] 
-    serializer_class = IssueListSerializer
+    serializer_class = IssueSerializer
 
     def get_queryset(self):
         """Define the Query String usable in url."""
         queryset = Issue.objects.filter(project=self.kwargs['project_pk'])
-        # queryset = get_object_or_404(Issue, project=self.kwargs['project_pk'])
         project = self.request.GET.get('project')
         if project is not None:
             queryset = queryset.filter(project__id=project)
@@ -156,7 +101,9 @@ class IssueViewset(ModelViewSet):
         
     def perform_create(self, serializer):
         # save the request.user as author when creating the issue
-        serializer.save(author_user=self.request.user)
+        project= Project.objects.get(pk=self.kwargs['project_pk'])
+        serializer.save(author_user=self.request.user,
+                        project=project)
 
 def http_methods_disable(*methods):
     def decorator(cls):

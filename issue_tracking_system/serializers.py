@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.serializers  import HyperlinkedIdentityField, HyperlinkedModelSerializer
 from rest_framework_nested.serializers import NestedHyperlinkedModelSerializer
 from issue_tracking_system.models import Project, Contributor, Issue, Comment
-
+from authentication.models import User
 
 class ProjectSerializer(HyperlinkedModelSerializer):
 
@@ -18,69 +18,22 @@ class ProjectSerializer(HyperlinkedModelSerializer):
         return value
 
 
-class ContributorSerializer(NestedHyperlinkedModelSerializer):
+class ContributorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Contributor
         fields = ['id', 'user', 'project', 'permission', 'role']
 
 
-class IssueListSerializer(NestedHyperlinkedModelSerializer):
-    parent_lookup_kwargs = {
-        'project_pk': 'project_id',
-    }
-    extra_kwargs = {
-        'url': {'view_name': 'project', 'lookup_field':  
-                'project-detail'},
-    }
-    # comment = CommentSerializer()
-    class Meta:
-        model = Issue
-        fields = ['id', 'title', 'desc', 'created_time', 'tag', 'priority', 'project', 'status', 'active', 'assignee_user', 'author']
-    
-    
-# class CommentSerializer(serializers.ModelSerializer):
-class CommentSerializer(NestedHyperlinkedModelSerializer):
-    parent_lookup_kwargs = {
-        'issue_pk': 'issue_id',
-        'project_pk': 'issue_project_id',
-    }
-    extra_kwargs = {
-            'url': {'view_name': 'issues', 'lookup_field':  
-                    'issue-detail'},
-        }
+class CommentSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Comment
         fields = ['id', 'description', 'author', 'active', 'issue', 'created_time']
 
 
-# class ContributorListSerializer(serializers.ListSerializer):
+class IssueSerializer(serializers.ModelSerializer):
 
-#     class Meta:
-#         model = Contributor
-#         fields = ['id', 'user', 'project', 'permission', 'role']
-
-# class ContributorDetailSerializer(serializers.Serializer):
-
-#     project = serializers.SerializerMethodField()
-
-#     class Meta:
-#         model = Contributor
-#         # fields = ['id', 'user', 'project', 'permission', 'role']
-#         fields = ['user']
-
-
-# class IssueListSerializer(serializers.ModelSerializer):
-
-#     class Meta:
-#         model = Issue
-#         fields = ['id', 'title', 'desc', 'project_id', 'created_time']
-
-# class IssueDetailSerializer(serializers.ModelSerializer):
-
-#     project = serializers.SerializerMethodField()
-
-#     class Meta:
-#         model = Issue
-#         fields = ['id', 'title', 'desc', 'created_time', 'tag', 'priority', 'project_id', 'status', 'author_user', 'assignee_user']
-
+    class Meta:
+        model = Issue
+        fields = ['id', 'title', 'desc', 'created_time', 'tag', 'priority', 'project', 'status', 'active', 'assignee_user', 'author']
