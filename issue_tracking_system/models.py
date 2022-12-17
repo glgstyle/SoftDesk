@@ -41,8 +41,14 @@ class Contributor(models.Model):
     role = models.CharField(max_length=200, blank=True)
     active = models.BooleanField(default=False)
 
+    # @property
+    # def author(self):
+    #     if self.user != None:
+    #         return self.user.id
+    #     else:
+    #         return None
     @property
-    def author(self):
+    def contributor(self):
         if self.user != None:
             return self.user.id
         else:

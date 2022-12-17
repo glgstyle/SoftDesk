@@ -1,5 +1,5 @@
 from rest_framework import permissions
-
+from issue_tracking_system.models import Contributor
 
 # permissions
 class IsOwnerOrReadOnly(permissions.BasePermission):
@@ -32,12 +32,15 @@ class IsContributor(permissions.BasePermission):
         return True
 
     def has_object_permission(self, request, view, obj):
-        # Read permissions are allowed to any request,
-        # so we'll always allow GET, HEAD or OPTIONS requests.
-        if request.method in permissions.SAFE_METHODS:
+        """Return True if request.user is a contributor 
+           and give him permission to modify the project"""
+        project = obj.id
+        try:
+            contributor = Contributor.objects.get(project_id=project, user_id=request.user.id)
+        except Contributor.DoesNotExist:
+            contributor = None
+        if contributor is not None:
             return True
+        return False
 
-        # Instance must have an attribute named `author`.
-        # return obj.user == request.user
-        # print("///////author : ", obj.author, "request.user : ", request.user.id)
-        return obj.author == request.user.id
+

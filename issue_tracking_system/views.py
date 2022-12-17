@@ -3,12 +3,14 @@ from issue_tracking_system.serializers import ProjectSerializer, ContributorSeri
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
 from issue_tracking_system.permissions import IsOwnerOrReadOnly, IsContributor
-
+from django.contrib import messages
+from rest_framework.response import Response
+from rest_framework import status
 
 class ProjectViewset(ModelViewSet):
     """View for Project object. """
 
-    permission_classes = [IsAuthenticated & IsOwnerOrReadOnly]  # Only for logged users and owner or only read
+    permission_classes = [IsAuthenticated & IsOwnerOrReadOnly & IsContributor]  # Only for logged users and owner or only read
     serializer_class = ProjectSerializer
 
     def get_queryset(self):
@@ -40,10 +42,9 @@ class ContributorViewset(ModelViewSet):
         return queryset
 
     def perform_create(self, serializer):
-        # save the request.user as author when creating the issue
+        # save the project_id when creating the contributor
         project= Project.objects.get(pk=self.kwargs['project_pk'])
         serializer.save(project=project)
-    
 
 class IssueViewset(ModelViewSet):
     """View for Issue object. """
