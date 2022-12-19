@@ -156,16 +156,13 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
-      'rest_framework.permissions.IsAuthenticated',
-    ),
+      'rest_framework.permissions.IsAuthenticated',),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication', 
-    ),
-    'EXCEPTION_HANDLER': ('rest_framework.views.exception_handler'
-    ),
+        'rest_framework_simplejwt.authentication.JWTAuthentication',),
+    'EXCEPTION_HANDLER': ('rest_framework.views.exception_handler'),
 }
 AUTHENTICATION_BACKENDS = ['authentication.auth_backends.EmailBackend']
-# set the JWT (JSON Web Token) lifetime 
+# set the JWT (JSON Web Token) lifetime
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),
     'REFRESH_TOKEN_LIFETIME': timedelta(minutes=30),
@@ -183,7 +180,8 @@ SIMPLE_JWT = {
     'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
     'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',
-    'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
+    'USER_AUTHENTICATION_RULE':
+    'rest_framework_simplejwt.authentication.default_user_authentication_rule',
 
     'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
     'TOKEN_TYPE_CLAIM': 'token_type',

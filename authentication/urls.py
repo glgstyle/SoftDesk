@@ -1,7 +1,6 @@
-
-from django.contrib import admin
 from django.urls import include, path
-from rest_framework_simplejwt.views import TokenRefreshView, TokenObtainPairView, TokenBlacklistView
+from rest_framework_simplejwt.views import (
+    TokenRefreshView, TokenObtainPairView, TokenBlacklistView)
 from authentication.views import UserRegistrationView
 
 

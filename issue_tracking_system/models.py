@@ -22,10 +22,11 @@ class Project(models.Model):
 
     @property
     def author(self):
-        if self.author_user != None:
+        if self.author_user is not None:
             return self.author_user.id
         else:
             return None
+
 
 class Contributor(models.Model):
     user = models.ForeignKey(
@@ -41,18 +42,6 @@ class Contributor(models.Model):
     role = models.CharField(max_length=200, blank=True)
     active = models.BooleanField(default=False)
 
-    # @property
-    # def author_user(self):
-    #     if self.user != None:
-    #         return self.user.id
-    #     else:
-    #         return None
-    @property
-    def contributor(self):
-        if self.user != None:
-            return self.user.id
-        else:
-            return None
 
 class Issue(models.Model):
     title = models.fields.CharField(max_length=128)
@@ -85,19 +74,20 @@ class Issue(models.Model):
 
     @property
     def author(self):
-        if self.author_user != None:
+        if self.author_user is not None:
             return self.author_user.id
         else:
             return None
 
     @transaction.atomic
     def disable(self):
-        if self.active is False:
         # Ne faisons rien si la catégorie est déjà désactivée
+        if self.active is False:
             return
         self.active = False
         self.save()
         self.project.update(active=False)
+
 
 class Comment(models.Model):
     description = models.fields.CharField(max_length=128, blank=True)
@@ -109,7 +99,7 @@ class Comment(models.Model):
 
     @property
     def author(self):
-        if self.author_user != None:
+        if self.author_user is not None:
             return self.author_user.id
         else:
             return None

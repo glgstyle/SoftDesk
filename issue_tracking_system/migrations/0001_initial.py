@@ -32,7 +32,8 @@ class Migration(migrations.Migration):
                         choices=[
                             ("Lecture", "read"),
                             ("Ecriture", "write"),
-                            ("Modification / Suppression", "update_and_delete"),
+                            ("Modification / Suppression",
+                             "update_and_delete"),
                         ],
                         max_length=200,
                     ),
@@ -161,7 +162,8 @@ class Migration(migrations.Migration):
             model_name="contributor",
             name="user",
             field=models.ForeignKey(
-                on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL
+                on_delete=django.db.models.deletion.CASCADE,
+                to=settings.AUTH_USER_MODEL
             ),
         ),
         migrations.CreateModel(

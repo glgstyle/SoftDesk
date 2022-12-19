@@ -1,6 +1,7 @@
 from rest_framework import permissions
 from issue_tracking_system.models import Contributor, Project
 
+
 # permissions
 class IsOwnerOrReadOnly(permissions.BasePermission):
     """
@@ -47,7 +48,8 @@ class IsContributor(permissions.BasePermission):
         project_id = request.resolver_match.kwargs.get('project_pk')
         project = Project.objects.get(pk=project_id)
         try:
-            contributor = Contributor.objects.get(project_id=project_id, user_id=request.user.id)
+            contributor = Contributor.objects.get(
+                project_id=project_id, user_id=request.user.id)
         except Contributor.DoesNotExist:
             contributor = None
         if (contributor is not None) or (project.author_user == request.user):
@@ -55,7 +57,7 @@ class IsContributor(permissions.BasePermission):
         return False
 
     def has_object_permission(self, request, view, obj):
-        """Return True if request.user is a contributor 
+        """Return True if request.user is a contributor
            and give him permission to update/delete the contributors
            if he's owner"""
 

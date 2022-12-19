@@ -3,14 +3,14 @@ from django.contrib.auth.admin import UserAdmin
 from .models import User
 from django.utils.translation import gettext_lazy as _
 
-# admin.site.register(User, UserAdmin)
 
 class EmailUserAdmin(UserAdmin):
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name')}),
         (_('Permissions'), {
-            'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
+            'fields': ('is_active', 'is_staff', 'is_superuser', 'groups',
+                       'user_permissions'),
         }),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
     )
@@ -25,5 +25,6 @@ class EmailUserAdmin(UserAdmin):
     search_fields = ('email', 'first_name', 'last_name')
     ordering = ('email',)
     filter_horizontal = ('groups', 'user_permissions',)
+
 
 admin.site.register(User, EmailUserAdmin)

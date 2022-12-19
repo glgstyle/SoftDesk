@@ -1,6 +1,5 @@
 from rest_framework.viewsets import ReadOnlyModelViewSet
 from authentication.models import User
-from authentication.serializers import RegistrationSerializer
 from rest_framework import generics, status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -24,7 +23,7 @@ class UserRegistrationView(generics.CreateAPIView):
 
 class UsersViewset(ReadOnlyModelViewSet):
     """View to list all users. """
-    
+
     serializer_class = UsersSerializer
 
     def get_queryset(self):
