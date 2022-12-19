@@ -2,15 +2,15 @@ from issue_tracking_system.models import Project, Contributor, Issue, Comment
 from issue_tracking_system.serializers import ProjectSerializer, ContributorSerializer, IssueSerializer, CommentSerializer
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAuthenticated
-from issue_tracking_system.permissions import IsOwnerOrReadOnly, IsContributor
-from django.contrib import messages
+from issue_tracking_system.permissions import IsOwnerOrReadOnly, IsContributor, IsOwnerOfProject
 from rest_framework.response import Response
 from rest_framework import status
+
 
 class ProjectViewset(ModelViewSet):
     """View for Project object. """
 
-    permission_classes = [IsAuthenticated & IsOwnerOrReadOnly & IsContributor]  # Only for logged users and owner or only read
+    permission_classes = [IsAuthenticated & IsOwnerOrReadOnly]
     serializer_class = ProjectSerializer
 
     def get_queryset(self):
@@ -29,7 +29,7 @@ class ProjectViewset(ModelViewSet):
 class ContributorViewset(ModelViewSet):
     """View for Contributor object. """
 
-    permission_classes = [IsAuthenticated & IsContributor] 
+    permission_classes = [IsAuthenticated & IsOwnerOfProject] 
     serializer_class = ContributorSerializer
 
     def get_queryset(self):
@@ -44,29 +44,20 @@ class ContributorViewset(ModelViewSet):
     def perform_create(self, serializer):
         field_user = serializer.validated_data["user"]
         print("field user", field_user.id)
-        existing_contributors = Contributor.objects.filter(
+        already_contributor = Contributor.objects.filter(
             project=self.kwargs['project_pk']).filter(user_id=field_user).exists()
-        # , user_id=self.request.user.id).exists()
-        print(existing_contributors)
-        # print("serializer data", serializer.data["user"])
-        # new_contributor = self.request.user.id
-        if not existing_contributors:
-            print("Contributeur n'existe pas")
+        if not already_contributor:
             # save the project_id when creating the contributor
             project = Project.objects.get(pk=self.kwargs['project_pk'])
             serializer.save(project=project)
         else :
-            print("Contributeur existe déjà")
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-        # # save the project_id when creating the contributor
-        # project= Project.objects.get(pk=self.kwargs['project_pk'])
-        # serializer.save(project=project)
 
 class IssueViewset(ModelViewSet):
     """View for Issue object. """
 
-    permission_classes = [IsAuthenticated & IsOwnerOrReadOnly] 
+    permission_classes = [IsAuthenticated & IsContributor]
     serializer_class = IssueSerializer
 
     def get_queryset(self):
@@ -87,12 +78,12 @@ class IssueViewset(ModelViewSet):
 
 class CommentViewset(ModelViewSet):
     """View for Comment object. """
-    permission_classes = [IsAuthenticated & IsContributor]  # Only for logged users
+
+    permission_classes = [IsAuthenticated & IsContributor]
     serializer_class = CommentSerializer
 
     def get_queryset(self):
         """Define the Query String usable in url."""
-        # queryset = Comment.objects.filter(active=True)
         queryset = Comment.objects.filter(issue=self.kwargs['issue_pk'])
         comment = self.request.GET.get('issue')
         if comment is not None:
@@ -100,15 +91,6 @@ class CommentViewset(ModelViewSet):
         return queryset
 
     def perform_create(self, serializer):
-        # save the request.user as author when creating the comment
         issue= Issue.objects.get(pk=self.kwargs['issue_pk'])
+        # save the request.user as author when creating the comment
         serializer.save(author_user=self.request.user, issue=issue)
-
-    # fonction update et delete pour l'auteur du commentaire
-
-# permissions sur les accès modification etc
-# owasp
-
-#Comment :
-#   mettre l'url users ver authentication au lieu d'issue_tracking_system
-#   ne pas ajouter le contributeur au projet si il est déjà présent 

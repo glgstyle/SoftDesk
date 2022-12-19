@@ -9,6 +9,7 @@ from authentication.serializers import RegistrationSerializer, UsersSerializer
 
 
 class UserRegistrationView(generics.CreateAPIView):
+    """View to register a User. """
 
     permission_classes = [AllowAny]
     serializer_class = RegistrationSerializer
@@ -22,7 +23,8 @@ class UserRegistrationView(generics.CreateAPIView):
 
 
 class UsersViewset(ReadOnlyModelViewSet):
-
+    """View to list all users. """
+    
     serializer_class = UsersSerializer
 
     def get_queryset(self):
