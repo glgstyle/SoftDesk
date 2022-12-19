@@ -1,5 +1,5 @@
 from rest_framework import permissions
-from issue_tracking_system.models import Contributor
+from issue_tracking_system.models import Contributor, Project
 
 # permissions
 class IsOwnerOrReadOnly(permissions.BasePermission):
@@ -17,7 +17,7 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             print('true')
             return True
-        # Instance must have an attribute named `owner`.
+        # Instance must have an attribute named author_user`.
         return obj.author_user == request.user
 
 
@@ -33,14 +33,12 @@ class IsContributor(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         """Return True if request.user is a contributor 
-           and give him permission to modify the project"""
-        project = obj.id
+           and give him permission to update/delete the contributors"""
+        project_id = obj.project
         try:
-            contributor = Contributor.objects.get(project_id=project, user_id=request.user.id)
+            contributor = Contributor.objects.get(project_id=project_id, user_id=request.user.id)
         except Contributor.DoesNotExist:
             contributor = None
         if contributor is not None:
             return True
         return False
-
-

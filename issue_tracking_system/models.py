@@ -42,7 +42,7 @@ class Contributor(models.Model):
     active = models.BooleanField(default=False)
 
     # @property
-    # def author(self):
+    # def author_user(self):
     #     if self.user != None:
     #         return self.user.id
     #     else:

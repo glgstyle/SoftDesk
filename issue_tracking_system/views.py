@@ -42,9 +42,26 @@ class ContributorViewset(ModelViewSet):
         return queryset
 
     def perform_create(self, serializer):
-        # save the project_id when creating the contributor
-        project= Project.objects.get(pk=self.kwargs['project_pk'])
-        serializer.save(project=project)
+        field_user = serializer.validated_data["user"]
+        print("field user", field_user.id)
+        existing_contributors = Contributor.objects.filter(
+            project=self.kwargs['project_pk']).filter(user_id=field_user).exists()
+        # , user_id=self.request.user.id).exists()
+        print(existing_contributors)
+        # print("serializer data", serializer.data["user"])
+        # new_contributor = self.request.user.id
+        if not existing_contributors:
+            print("Contributeur n'existe pas")
+            # save the project_id when creating the contributor
+            project = Project.objects.get(pk=self.kwargs['project_pk'])
+            serializer.save(project=project)
+        else :
+            print("Contributeur existe déjà")
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        # # save the project_id when creating the contributor
+        # project= Project.objects.get(pk=self.kwargs['project_pk'])
+        # serializer.save(project=project)
 
 class IssueViewset(ModelViewSet):
     """View for Issue object. """
