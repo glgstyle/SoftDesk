@@ -2,8 +2,8 @@ from django.contrib import admin
 from django.urls import include, path
 from issue_tracking_system.views import (
     ProjectViewset, ContributorViewset, IssueViewset, CommentViewset)
-from rest_framework import routers
 from authentication.views import UsersViewset
+from rest_framework_nested import routers
 
 
 # project
